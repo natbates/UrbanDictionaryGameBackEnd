@@ -93,6 +93,9 @@ module.exports = (io) => {
             return;
         }
         
+        console.log("all lobbies", lobbies)
+        const lobby = lobbies[lobbyId];
+        console.log(`Lobby found:`, lobby);
         if (lobby.gameInProgress) {
             console.log("Cannot join lobby. Game is already in progress.");
             socket.emit("lobby-join-failed", { success: false, message: "Game is already in progress." });
