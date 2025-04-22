@@ -37,6 +37,11 @@ module.exports = (io) => {
         callback({ success: true });
     });
 
+    socket.on("chat-message", ({ lobbyId, message, sender }) => {
+        console.log(`💬 Message from ${sender} in lobby ${lobbyId}: ${message}`);
+        io.to(lobbyId).emit("chat-message", { sender, message }); // Broadcast to all players in the lobby
+    });
+
     socket.on("start-game", (lobbyId) => {
         console.log(`Checking if lobby exists for ID: ${lobbyId}`);
         if (!lobbyExists(lobbyId)) {
@@ -88,9 +93,6 @@ module.exports = (io) => {
             return;
         }
         
-        console.log("all lobbies", lobbies)
-        const lobby = lobbies[lobbyId];
-        console.log(`Lobby found:`, lobby);
         if (lobby.gameInProgress) {
             console.log("Cannot join lobby. Game is already in progress.");
             socket.emit("lobby-join-failed", { success: false, message: "Game is already in progress." });
